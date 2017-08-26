@@ -1,0 +1,14 @@
+language: python
+env:
+    - TRAVISCL=True
+python:
+    - "3.3"
+    - "3.4"
+    - "3.5"
+    - "3.6"
+    - "3.7-dev"
+install:
+    - python setup.py install
+script:
+    - python ghoffline
+sudo: true
