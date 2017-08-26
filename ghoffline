@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+import os
+import sys
+from github import Github
+import requests
+import regex
+
+if 'TRAVISCL' in os.environ:
+	print('TRAVIS-CL OK')
+	sys.exit()
+
+if len(sys.argv) == 4:
+	user = sys.argv[1]
+	password = sys.argv[2]
+	repo = sys.argv[3]
+else:
+	print('[!] ERROR')
+	print('[!] Use: ghoffline user password user/repo')
+	print('[!] Exemple: Tiago 12345678 TiagoDanin/GHOffline')
+	print('[!] Ouput: off_<user_repo>.txt')
+	sys.exit()
+
+b = "((https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])" #https://regex101.com/r/8yXEhZ/1
+
+def request_url(url):
+	try:
+		data = requests.get(url)
+		if data.status_code == 200:
+			return data
+		else:
+			return True
+		return False
+	except Exception as error:
+		return False
+
+try:
+	gh = Github(user, password)
+except Exception as error:
+	print('[+] FALID!')
+	print(error)
+	sys.exit()
+
+search_code = gh.search_code('http OR https', repo=repo)
+
+print('[-----------------------------------]')
+for code in search_code:
+	try:
+		code_content_urls = regex.findall(b, str(code.decoded_content))
+		for urls in code_content_urls:
+			if request_url(urls[0]):
+				print('[+] ON!')
+				print('[+] URL:', str(urls[0]))
+				print('[+] path:',str(code.repository.full_name) + '/' + str(code.path))
+				print('[-----------------------------------]')
+			else:
+				print('[+] OFF!')
+				print('[+] URL:', str(urls[0]))
+				print('[+] URL:', str(code.repository.full_name) + '/' + str(code.path))
+				print('[-----------------------------------]')
+				with open(str(os.getcwd()) + '/off_' + str(repo.replace('/', '_')) + '.txt', 'a') as f:
+					f.write('URL: ' + str(urls[0]) + '\n' + 'PATH: ' + str(code.repository.full_name) + '/' + str(code.path) + '\n\n')
+	except Exception as error:
+		print('[-] Error!')
+		print(error)
+		print('[-----------------------------------]')
