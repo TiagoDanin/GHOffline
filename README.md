@@ -1,5 +1,5 @@
 # GHOffline [![Build Status](https://travis-ci.org/TiagoDanin/GHOffline.svg?branch=master)](https://travis-ci.org/TiagoDanin/GHOffline)
-Check offline site in a repository of github
+Check offline site in a repository of Github
 
 ## Requires
 Written for Python3
@@ -7,12 +7,12 @@ Written for Python3
 ## Install
 PIP:
 ```bash
-$ sudo pip install FileXShared
+$ sudo pip install ghoffline
 ```
 
 Manual Installation:
 ```bash
-$ sudo python setup install
+$ sudo python setup.py install
 ```
 
 ## How to use
