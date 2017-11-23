@@ -10,15 +10,18 @@ if 'TRAVISCL' in os.environ:
 	print('TRAVIS-CL OK')
 	sys.exit()
 
+os_dir = os.getcwd()
+
 if len(sys.argv) == 4:
-	user = sys.argv[1]
-	password = sys.argv[2]
-	repo = sys.argv[3]
+	user = str(sys.argv[1])
+	password = str(sys.argv[2])
+	repo = str(sys.argv[3])
 else:
 	print('[!] ERROR')
-	print('[!] Use: ghoffline user password user/repo')
-	print('[!] Exemple: Tiago 12345678 TiagoDanin/GHOffline')
-	print('[!] Ouput: off_<user_repo>.txt')
+	print('[!] Login with password:       ghoffline user password user/repo')
+	print('[!] Login with token:          ghoffline token password user/repo')
+	print('[!] Exemple:                   Tiago 12345678 TiagoDanin/GHOffline')
+	print('[!] Ouput:                     off_<user_repo>.txt')
 	sys.exit()
 
 b = "((https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])" #https://regex101.com/r/8yXEhZ/1
@@ -34,33 +37,50 @@ def request_url(url):
 	except Exception as error:
 		return False
 
+def write_file(str_text, type_text=False):
+	print(str_text)
+	if type_text and not type_text == 'print':
+		pass
+	else:
+		with open(str(os_dir) + '/ghoffline_' + str(repo.replace('/', '_')) + '.txt', 'a') as f:
+			f.write(str(str_text) + '\n')
+	return
+
 try:
-	gh = Github(user, password)
+	if user == 'token':
+		gh = Github(password)
+	else:
+		gh = Github(user, password)
 except Exception as error:
-	print('[+] FALID!')
-	print(error)
+	write_file('[+] FALID!', 'print')
+	write_file(error, 'print')
 	sys.exit()
 
 search_code = gh.search_code('http OR https', repo=repo)
 
-print('[-----------------------------------]')
+write_file('[-----------------------------------]')
 for code in search_code:
 	try:
 		code_content_urls = regex.findall(b, str(code.decoded_content))
 		for urls in code_content_urls:
 			if request_url(urls[0]):
-				print('[+] ON!')
-				print('[+] URL:', str(urls[0]))
-				print('[+] path:',str(code.repository.full_name) + '/' + str(code.path))
-				print('[-----------------------------------]')
+				if (urls[0]).startswith('http://') and request_url((urls[0]).replace('http://', 'https://')):
+					write_file('[+] ON! And Available HTTPS')
+					write_file('[+] URL :' + str(urls[0]))
+					write_file('[+] URL HTTPS : ' + str((urls[0]).replace('http://', 'https://')))
+					write_file('[+] Path :' + str(code.repository.full_name) + '/' + str(code.path))
+					write_file('[-----------------------------------]')
+				else:
+					write_file('[+] ON!')
+					write_file('[+] URL :' + str(urls[0]))
+					write_file('[+] Path :' + str(code.repository.full_name) + '/' + str(code.path))
+					write_file('[-----------------------------------]')
 			else:
-				print('[+] OFF!')
-				print('[+] URL:', str(urls[0]))
-				print('[+] URL:', str(code.repository.full_name) + '/' + str(code.path))
-				print('[-----------------------------------]')
-				with open(str(os.getcwd()) + '/off_' + str(repo.replace('/', '_')) + '.txt', 'a') as f:
-					f.write('URL: ' + str(urls[0]) + '\n' + 'PATH: ' + str(code.repository.full_name) + '/' + str(code.path) + '\n\n')
+				write_file('[-] OFF! ')
+				write_file('[-] URL: ' + str(urls[0]))
+				write_file('[-] Path :' + str(code.repository.full_name) + '/' + str(code.path))
+				write_file('[-----------------------------------]')
 	except Exception as error:
-		print('[-] Error!')
-		print(error)
-		print('[-----------------------------------]')
+		write_file('[-] Error!', 'print')
+		write_file(error, 'print')
+		write_file('[-----------------------------------]', 'print')
