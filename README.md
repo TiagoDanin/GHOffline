@@ -5,22 +5,28 @@ Check offline site in a repository of Github
 Written for Python3
 
 ## Install
-PIP:
+PIP installation:
 ```bash
 $ sudo pip install ghoffline
 ```
 
-Manual Installation:
+Manual installation:
 ```bash
 $ sudo python setup.py install
 ```
 
 ## How to use
+Login with password
 ```bash
-$ ghoffline your_username your_password user/repo
+$ ghoffline you_user you_password user/repo
 ```
 
-Output in text (off_<user_repo>.txt)
+Login with token (Note: user='token')
+```bash
+$ ghoffline token you_token user/repo
+```
+
+Output in text (<user_repo>.txt)
 
 Very simple :)
 

@@ -18,8 +18,8 @@ if len(sys.argv) == 4:
 	repo = str(sys.argv[3])
 else:
 	print('[!] ERROR')
-	print('[!] Login with password:       ghoffline user password user/repo')
-	print('[!] Login with token:          ghoffline token password user/repo')
+	print('[!] Login with password:       ghoffline you_user you_password user/repo')
+	print('[!] Login with token:          ghoffline token you_token user/repo')
 	print('[!] Exemple:                   Tiago 12345678 TiagoDanin/GHOffline')
 	print('[!] Ouput:                     off_<user_repo>.txt')
 	sys.exit()

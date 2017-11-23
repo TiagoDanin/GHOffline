@@ -100,3 +100,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+#ghoffline
+ghoffline_*.txt

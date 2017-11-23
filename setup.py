@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
 	name='GHOffline',
-	version ='1.0',
+	version ='1.1',
 	description = 'Check offline site in a repository of Github',
 	long_description = '''
 	GHOffline
